@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Checkout scm') {
-            git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/script.git', branch: 'main'
+            steps {
+                git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/script.git', branch: 'main'
+            }
         }
 
         stage('Check Migration') {
@@ -40,6 +42,7 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             // Example of a success message. Replace with your Slack notification step.
