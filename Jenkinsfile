@@ -43,7 +43,13 @@ pipeline {
                     echo "Target migration version: ${target_version}"
                     echo "Database URI: ${db_uri}"
 
-                    sh "python3 check_migration.py --db_uri \"${db_uri}\" --target_version \"${target_version}\""
+                    // install dependencies
+                    sh "python3 -m venv .venv"
+                    sh "source .venv/bin/activate"
+                    sh "pip install --no-cache-dir -r requirements.txt"
+
+                    // run python script
+                    sh "python3 -u check_migration.py --db_uri \"${db_uri}\" --target_version \"${target_version}\""
                 }
             }
         }
