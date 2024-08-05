@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent 
 
     stages {
         stage('Checkout scm') {
@@ -38,6 +38,8 @@ pipeline {
 
                     echo "Target migration version: ${target_version}"
                     echo "Database URI: ${db_uri}"
+
+                    sh "python3 check_migration.py --db_uri \"${db_uri}\" --target_version \"${target_version}\""
                 }
             }
         }
