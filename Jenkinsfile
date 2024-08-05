@@ -5,10 +5,41 @@ pipeline {
         }
     }
 
+    environment {
+        DB_URI = 'postgresql://postgres:postgrespw@host.docker.internal:5432/kabam_db'
+    }
+
     stages {
         stage('Checkout scm') {
             steps {
                 git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/script.git', branch: 'main'
+            }
+        }
+
+        stage('Test Database Connection') {
+            steps {
+                script {
+                    def dbUri = env.DB_URI
+                    def dbType = 'postgresql' // Change according to your database
+
+                    echo "Testing connection to the database: ${dbUri}"
+
+                    try {
+                        // Test PostgreSQL connection
+                        if (dbType == 'postgresql') {
+                            sh """
+                                pg_isready -d ${dbUri}
+                            """
+                        } 
+                        // Add other database types as needed
+                        else {
+                            error "Unsupported database type: ${dbType}"
+                        }
+                    } catch (Exception e) {
+                        echo "Database connection failed: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
             }
         }
 
@@ -17,8 +48,6 @@ pipeline {
                 script {
                     def target_version
                     def db_uri
-
-                    sh 'python3 --version'
 
                     // Get the input
                     def userInput = input(
@@ -29,21 +58,13 @@ pipeline {
                                 defaultValue: 'None',
                                 description: 'Target migration version',
                                 name: 'target_version'
-                            ),
-                            string(
-                                defaultValue: 'None',
-                                description: 'Database URI',
-                                name: 'db_uri'
                             )
                         ]
                     )
 
                     // Save to variables. Default to empty string if not found.
                     target_version = userInput.target_version ?: ''
-                    db_uri = userInput.db_uri ?: ''
-
                     echo "Target migration version: ${target_version}"
-                    echo "Database URI: ${db_uri}"
                 }
             }
         }
