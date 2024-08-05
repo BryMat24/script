@@ -18,7 +18,7 @@ pipeline {
                     def target_version
                     def db_uri
 
-                    echo 'python3 --version'
+                    sh 'python3 --version'
 
                     // Get the input
                     def userInput = input(
