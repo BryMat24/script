@@ -32,8 +32,8 @@ pipeline {
                     )
 
                     // Save to variables. Default to empty string if not found.
-                    target_version = userInput.target_version ?: ''
-                    echo "Target migration version: ${target_version}"
+                    // target_version = userInput.target_version ?: ''
+                    echo "Target migration version: 1"
                 }
             }
         }
