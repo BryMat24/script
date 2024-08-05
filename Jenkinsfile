@@ -1,5 +1,9 @@
 pipeline {
-    agent 
+    agent {
+        dockerfile {
+            filename 'Dockerfile'
+        }
+    } 
 
     stages {
         stage('Checkout scm') {
