@@ -15,10 +15,7 @@ pipeline {
         stage('Check Migration') {
             steps {
                 script {
-                    def target_version
-                    def db_uri
-
-                    // Get the input
+                    // Prompt user for input
                     def userInput = input(
                         id: 'userInput', 
                         message: 'Enter the following values:',
@@ -31,8 +28,8 @@ pipeline {
                         ]
                     )
 
-                    // Save to variables. Default to empty string if not found.
-                    def targetVersion = userInput.target_version
+                    // Access the input value
+                    def targetVersion = userInput['target_version']
                     echo "Target Migration Version: ${targetVersion}"
                 }
             }
@@ -41,11 +38,11 @@ pipeline {
 
     post {
         success {
-            // Example of a success message. Replace with your Slack notification step.
+            // Notify on success
             echo 'Success: Notify Slack here.'
         }
         failure {
-            // Example of a failure message. Replace with your Slack notification step.
+            // Notify on failure
             echo 'Failure: Notify Slack here.'
         }
     }
