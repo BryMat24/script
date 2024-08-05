@@ -39,5 +39,6 @@ if __name__ == "__main__":
     parser.add_argument('--target_version', type=str, required=True, help='The target migration version to check against')
     args = parser.parse_args()
 
+    print("checking start: ", args.target_version)
     result = check_migration_version(args.target_version, args.db_uri)
     sys.exit(result)
