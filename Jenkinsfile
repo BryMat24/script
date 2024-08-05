@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DB_URI = 'postgresql://postgres:postgrespw@host.docker.internal:5432/kabam_db'
-    }
-
     stages {
         stage('Checkout scm') {
             steps {
@@ -16,6 +12,7 @@ pipeline {
             steps {
                 script {
                     def target_version
+                    def db_uri
 
                     // Get the input
                     def userInput = input(
@@ -26,15 +23,21 @@ pipeline {
                                 defaultValue: 'None',
                                 description: 'Target migration version',
                                 name: 'target_version'
+                            ),
+                            string(
+                                defaultValue: 'None',
+                                description: 'Database URI',
+                                name: 'db_uri'
                             )
                         ]
                     )
 
                     // Save to variables. Default to empty string if not found.
-                    def targetVersion = userInput.target_version
-                    echo "Target Migration Version: ${targetVersion}"
+                    target_version = userInput.target_version ?: ''
+                    db_uri = userInput.db_uri ?: ''
 
-                    sh "python3 check_migration.py --db_uri ${dbUri} --target_version ${targetVersion}"
+                    echo "Target migration version: ${target_version}"
+                    echo "Database URI: ${db_uri}"
                 }
             }
         }
