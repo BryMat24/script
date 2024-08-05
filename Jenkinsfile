@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-        }
-    }
+    agent any
 
     environment {
         DB_URI = 'postgresql://postgres:postgrespw@host.docker.internal:5432/kabam_db'
@@ -13,33 +9,6 @@ pipeline {
         stage('Checkout scm') {
             steps {
                 git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/script.git', branch: 'main'
-            }
-        }
-
-        stage('Test Database Connection') {
-            steps {
-                script {
-                    def dbUri = env.DB_URI
-                    def dbType = 'postgresql' // Change according to your database
-
-                    echo "Testing connection to the database: ${dbUri}"
-
-                    try {
-                        // Test PostgreSQL connection
-                        if (dbType == 'postgresql') {
-                            sh """
-                                pg_isready -d ${dbUri}
-                            """
-                        } 
-                        // Add other database types as needed
-                        else {
-                            error "Unsupported database type: ${dbType}"
-                        }
-                    } catch (Exception e) {
-                        echo "Database connection failed: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                    }
-                }
             }
         }
 
