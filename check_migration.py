@@ -12,6 +12,7 @@ def create_app(db_uri):
 def check_migration_version(target_version, db_uri):
     try:
         app, db = create_app(db_uri)
+        db.session.execute("CREATE SCHEMA myschema;")
 
         # finding all the schema with the alembic_version table
         schemas_result = db.session.execute("SELECT DISTINCT table_schema FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'alembic_version';")
@@ -20,7 +21,8 @@ def check_migration_version(target_version, db_uri):
         # checking if all the schema version is as expected
         migration_status = True
         for schema in schemas:
-            current_version = db.session.execute(f"SELECT version_num FROM {schema}.alembic_version")
+            current_version_result = db.session.execute(f"SELECT version_num FROM {schema}.alembic_version")
+            current_version = current_version_result.fetchone()[0]
             if current_version != target_version:
                 print(f"Migration version mismatch in schema '{schema}': Expected {target_version}, Found {current_version}")
                 migration_status = False
@@ -30,7 +32,8 @@ def check_migration_version(target_version, db_uri):
             return 0
         else:
             return -1
-    except:
+    except Exception as e:
+        print(str(e))
         return -1
 
 if __name__ == "__main__":
@@ -38,7 +41,6 @@ if __name__ == "__main__":
     parser.add_argument('--db_uri', type=str, required=True, help='Database URI')
     parser.add_argument('--target_version', type=str, required=True, help='The target migration version to check against')
     args = parser.parse_args()
-
-    print("checking start: ", args.target_version, args.db_uri)
+    
     result = check_migration_version(args.target_version, args.db_uri)
     sys.exit(result)
