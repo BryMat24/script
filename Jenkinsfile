@@ -19,29 +19,23 @@ pipeline {
         stage('Check Migration') {
             steps {
                 script {
-                    def target_version
-
                     // Get the input
-                    def userInput = input(
+                    def targetVersion = input(
                         id: 'userInput', 
                         message: 'Enter the following value:',
                         parameters: [
                             string(
                                 defaultValue: 'None',
-                                description: 'Target migration version',
+                                description: 'Migration version',
                                 name: 'target_version'
                             )
                         ]
                     )
 
-                    // Save to variable. Default to empty string if not found.
-                    target_version = userInput.target_version ?: ''
-
-                    echo "Target migration version: ${target_version}"
-                    echo "Database URI: ${env.DB_URI}"
+                    echo "Target migration version: ${targetVersion}"
 
                     // run python script
-                    sh "python3 -u check_migration.py --db_uri \"${env.DB_URI}\" --target_version \"${target_version}\""
+                    sh "python3 -u check_migration.py --db_uri \"${env.DB_URI}\" --target_version \"${targetVersion}\""
                 }
             }
         }
