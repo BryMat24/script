@@ -5,6 +5,10 @@ pipeline {
         }
     } 
 
+    environment {
+        DB_URI = credentials('329ed325-d7ad-4273-aa19-69fab85790bc')
+    }
+
     stages {
         stage('Checkout scm') {
             steps {
@@ -16,35 +20,28 @@ pipeline {
             steps {
                 script {
                     def target_version
-                    def db_uri
 
                     // Get the input
                     def userInput = input(
                         id: 'userInput', 
-                        message: 'Enter the following values:',
+                        message: 'Enter the following value:',
                         parameters: [
                             string(
                                 defaultValue: 'None',
                                 description: 'Target migration version',
                                 name: 'target_version'
-                            ),
-                            string(
-                                defaultValue: 'None',
-                                description: 'Database URI',
-                                name: 'db_uri'
                             )
                         ]
                     )
 
-                    // Save to variables. Default to empty string if not found.
+                    // Save to variable. Default to empty string if not found.
                     target_version = userInput.target_version ?: ''
-                    db_uri = userInput.db_uri ?: ''
 
                     echo "Target migration version: ${target_version}"
-                    echo "Database URI: ${db_uri}"
+                    echo "Database URI: ${env.DB_URI}"
 
                     // run python script
-                    sh "python3 -u check_migration.py --db_uri \"${db_uri}\" --target_version \"${target_version}\""
+                    sh "python3 -u check_migration.py --db_uri \"${env.DB_URI}\" --target_version \"${target_version}\""
                 }
             }
         }
