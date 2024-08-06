@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout scm') {
             steps {
-                git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/script.git', branch: 'main'
+                git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/migration-script.git', branch: 'main'
             }
         }
 
