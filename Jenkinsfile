@@ -6,16 +6,14 @@ pipeline {
     } 
 
     environment {
-        DB_URI = credentials('329ed325-d7ad-4273-aa19-69fab85790bc')
+        DB_URI = credentials('')
     }
 
     stages {
         stage('Check Migration') {
             steps {
+                // get target version input 
                 script {
-                    git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/migration-script.git', branch: 'main'
-
-                    // Get the input
                     def targetVersion = input(
                         id: 'userInput', 
                         message: 'Enter the following value:',
