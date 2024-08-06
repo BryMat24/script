@@ -6,7 +6,7 @@ pipeline {
     } 
 
     environment {
-        DB_URI = credentials('')
+        DB_URI = credentials('329ed325-d7ad-4273-aa19-69fab85790bc')
     }
 
     stages {
