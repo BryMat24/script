@@ -10,15 +10,11 @@ pipeline {
     }
 
     stages {
-        stage('Checkout scm') {
-            steps {
-                git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/migration-script.git', branch: 'main'
-            }
-        }
-
         stage('Check Migration') {
             steps {
                 script {
+                    git credentialsId: 'github-credential', url: 'https://github.com/BryMat24/migration-script.git', branch: 'main'
+
                     // Get the input
                     def targetVersion = input(
                         id: 'userInput', 
