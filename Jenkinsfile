@@ -43,12 +43,6 @@ pipeline {
                     echo "Target migration version: ${target_version}"
                     echo "Database URI: ${db_uri}"
 
-                    // install dependencies
-                    sh "python3 -m venv .venv"
-                    sh "chmod +x .venv/bin/activate"
-                    sh ".venv/bin/activate"
-                    sh "pip install --no-cache-dir flask==1.1.4 Flask-SQLAlchemy==2.5.1"
-
                     // run python script
                     sh "python3 -u check_migration.py --db_uri \"${db_uri}\" --target_version \"${target_version}\""
                 }
